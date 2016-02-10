@@ -11,6 +11,7 @@ import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.GridView;
+import android.widget.Toast;
 
 import com.codepath.nytimessearch.R;
 import com.codepath.nytimessearch.adapters.ArticleArrayAdapter;
@@ -27,6 +28,8 @@ public class SearchActivity extends AppCompatActivity {
 
   ArrayList<Article> articles;
   ArticleArrayAdapter adapter;
+
+  private final int REQUEST_CODE = 200;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -77,12 +80,15 @@ public class SearchActivity extends AppCompatActivity {
     // as you specify a parent activity in AndroidManifest.xml.
     int id = item.getItemId();
 
-    //noinspection SimplifiableIfStatement
-    if (id == R.id.action_settings) {
-      return true;
+    switch (id){
+      case R.id.action_settings:
+        // TODO: Load settings activity here
+        showSettings();
+        return true;
+      default:
+        return super.onOptionsItemSelected(item);
     }
 
-    return super.onOptionsItemSelected(item);
   }
 
   public void onArticleSearch(View view) {
@@ -92,5 +98,29 @@ public class SearchActivity extends AppCompatActivity {
     // Call NYTimes
     NewYorkTimesClient newYorkTimesClient = new NewYorkTimesClient();
     newYorkTimesClient.fetchArticles(query, adapter);
+  }
+
+  public void showSettings(){
+    // create
+    Intent i = new Intent(getApplicationContext(), SettingsActivity.class);
+    // Pass Data
+    i.putExtra("mode", 2); // Example
+    // launch
+    startActivityForResult(i, REQUEST_CODE);
+  }
+
+  /**
+   * Get Data Back from SettingsActivity
+   * Time to handle the result of the settings-activity
+   */
+  public void onActivityResult(int requestCode, int resultCode, Intent i){
+
+    if(resultCode == RESULT_OK && requestCode == REQUEST_CODE){
+      // Extract name value from result extras
+      String beginDate = i.getExtras().getString("beginDate");
+      // Toast the name to display temporarily on screen
+      Toast.makeText(this, beginDate, Toast.LENGTH_SHORT).show();
+    }
+
   }
 }

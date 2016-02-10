@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -16,17 +15,9 @@ import android.widget.GridView;
 import com.codepath.nytimessearch.R;
 import com.codepath.nytimessearch.adapters.ArticleArrayAdapter;
 import com.codepath.nytimessearch.models.Article;
-import com.loopj.android.http.AsyncHttpClient;
-import com.loopj.android.http.JsonHttpResponseHandler;
-import com.loopj.android.http.RequestParams;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
+import com.codepath.nytimessearch.network.NewYorkTimesClient;
 
 import java.util.ArrayList;
-
-import cz.msebera.android.httpclient.Header;
 
 public class SearchActivity extends AppCompatActivity {
 
@@ -99,27 +90,7 @@ public class SearchActivity extends AppCompatActivity {
 
     //Toast.makeText(this, "Serach query: " + query, Toast.LENGTH_LONG).show();
     // Call NYTimes
-    AsyncHttpClient client = new AsyncHttpClient();
-    String url = "http://api.nytimes.com/svc/search/v2/articlesearch.json";
-    RequestParams params = new RequestParams();
-    params.put("api-key", "b63b81d7aaa01e9808bd21e049c85f67:15:74340628");
-    params.put("page", 0);
-    params.put("q", query);
-
-    client.get(url, params, new JsonHttpResponseHandler(){
-      @Override
-      public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-        Log.d("DEBUG", response.toString());
-        JSONArray articleJsonResults = null;
-        try {
-          articleJsonResults = response.getJSONObject("response").getJSONArray("docs");
-          adapter.addAll(Article.fromJSONArray(articleJsonResults));
-          Log.d("DEBUG", articles.toString());
-        }catch (JSONException ex){
-          ex.printStackTrace();
-        }
-      }
-    });
-
+    NewYorkTimesClient newYorkTimesClient = new NewYorkTimesClient();
+    newYorkTimesClient.fetchArticles(query, adapter);
   }
 }

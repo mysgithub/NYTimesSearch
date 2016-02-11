@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -11,14 +12,21 @@ import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.GridView;
-import android.widget.Toast;
 
 import com.codepath.nytimessearch.R;
 import com.codepath.nytimessearch.adapters.ArticleArrayAdapter;
 import com.codepath.nytimessearch.models.Article;
+import com.codepath.nytimessearch.models.Setting;
 import com.codepath.nytimessearch.network.NewYorkTimesClient;
+import com.loopj.android.http.JsonHttpResponseHandler;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
+
+import cz.msebera.android.httpclient.Header;
 
 public class SearchActivity extends AppCompatActivity {
 
@@ -29,6 +37,10 @@ public class SearchActivity extends AppCompatActivity {
   ArrayList<Article> articles;
   ArticleArrayAdapter adapter;
 
+  Setting setting;
+
+
+
   private final int REQUEST_CODE = 200;
 
   @Override
@@ -37,6 +49,10 @@ public class SearchActivity extends AppCompatActivity {
     setContentView(R.layout.activity_search);
     Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
     setSupportActionBar(toolbar);
+
+    if(setting == null){
+      setting = new Setting();
+    }
 
     setupViews();
   }
@@ -60,6 +76,7 @@ public class SearchActivity extends AppCompatActivity {
         Article article = articles.get(position);
         // pass
         i.putExtra("article", article);
+
         // launch
         startActivity(i);
       }
@@ -82,7 +99,6 @@ public class SearchActivity extends AppCompatActivity {
 
     switch (id){
       case R.id.action_settings:
-        // TODO: Load settings activity here
         showSettings();
         return true;
       default:
@@ -94,17 +110,45 @@ public class SearchActivity extends AppCompatActivity {
   public void onArticleSearch(View view) {
     String query = etQuery.getText().toString();
 
-    //Toast.makeText(this, "Serach query: " + query, Toast.LENGTH_LONG).show();
     // Call NYTimes
     NewYorkTimesClient newYorkTimesClient = new NewYorkTimesClient();
-    newYorkTimesClient.fetchArticles(query, adapter);
+
+    newYorkTimesClient.getArticles(query, setting, new JsonHttpResponseHandler() {
+      @Override
+      public void onStart() {
+        Log.d("DEBUG", "Request: " + super.getRequestURI().toString());
+      }
+
+      @Override
+      public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+        // CLEAR OUT old items before appending in the new ones
+        adapter.clear();
+        Log.d("DEBUG", "Response: " + response.toString());
+        JSONArray articleJsonResults = null;
+        try {
+          articleJsonResults = response.getJSONObject("response").getJSONArray("docs");
+          adapter.addAll(Article.fromJSONArray(articleJsonResults));
+          //Log.d("DEBUG", articles.toString());
+        }catch (JSONException ex){
+          ex.printStackTrace();
+        }
+      }
+      @Override
+      public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+        // TODO: Add Correct Error Handling if not able to communicate to NYTimes
+        Log.d("DEBUG", responseString);
+      }
+    });
+
   }
+
+
 
   public void showSettings(){
     // create
     Intent i = new Intent(getApplicationContext(), SettingsActivity.class);
-    // Pass Data
-    i.putExtra("mode", 2); // Example
+    // pass data
+    i.putExtra("setting", setting);
     // launch
     startActivityForResult(i, REQUEST_CODE);
   }
@@ -117,9 +161,7 @@ public class SearchActivity extends AppCompatActivity {
 
     if(resultCode == RESULT_OK && requestCode == REQUEST_CODE){
       // Extract name value from result extras
-      String beginDate = i.getExtras().getString("beginDate");
-      // Toast the name to display temporarily on screen
-      Toast.makeText(this, beginDate, Toast.LENGTH_SHORT).show();
+      setting = (Setting) i.getParcelableExtra("setting");
     }
 
   }

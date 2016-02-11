@@ -48,11 +48,12 @@
     <Spinner
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/sortOrder"
-        android:layout_alignBottom="@+id/tvSortOrder"
+        android:id="@+id/sortOrderSpinner"
+        android:entries="@array/sort_order_array"
+        android:layout_below="@+id/etBeginDate"
         android:layout_alignLeft="@+id/etBeginDate"
         android:layout_alignStart="@+id/etBeginDate"
-        android:spinnerMode="dropdown"/>
+        android:layout_marginTop="19dp"/>
 
     <TextView
         android:layout_width="wrap_content"
@@ -64,26 +65,58 @@
         android:layout_alignParentStart="true"
         android:layout_marginTop="65dp"/>
 
-    <CheckBox
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="New CheckBox"
-        android:id="@+id/cbNewsDeskValue"
-        android:layout_alignBottom="@+id/tvDeskValues"
-        android:layout_alignLeft="@+id/sortOrder"
-        android:layout_alignStart="@+id/sortOrder"
-        android:checked="false"
-        />
+
 
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/save"
         android:id="@+id/btnSave"
-        android:layout_centerVertical="true"
-        android:layout_alignLeft="@+id/cbNewsDeskValue"
-        android:layout_alignStart="@+id/cbNewsDeskValue"
-        android:onClick="onSave"/>
+        android:onClick="onSave"
+        android:layout_marginTop="38dp"
+        android:layout_below="@+id/relativeLayout"
+        android:layout_alignLeft="@+id/sortOrderSpinner"
+        android:layout_alignStart="@+id/sortOrderSpinner"/>
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="30dp"
+        android:id="@+id/relativeLayout"
+        android:layout_below="@+id/tvSortOrder"
+        android:layout_alignLeft="@+id/btnSave"
+        android:layout_alignStart="@+id/btnSave">
+
+        <CheckBox
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/arts"
+            android:id="@+id/cbArts"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:checked="false"/>
+
+        <CheckBox
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/fashion_style"
+            android:id="@+id/cbFashionStyle"
+            android:layout_below="@+id/cbArts"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:checked="false"/>
+
+        <CheckBox
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/sports"
+            android:id="@+id/cbSports"
+            android:layout_below="@+id/cbFashionStyle"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:checked="false"/>
+    </RelativeLayout>
 
 
 </RelativeLayout>

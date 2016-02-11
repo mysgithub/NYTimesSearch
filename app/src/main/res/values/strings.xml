@@ -10,4 +10,12 @@
     <string name="sort_order">Sort Order</string>
     <string name="desk_value">News Desk Values</string>
     <string name="save">Save</string>
+    <string name="arts">Arts</string>
+    <string name="fashion_style"><![CDATA[Fashion & Style]]></string>
+    <string name="sports">Sports</string>
+    <string-array name="sort_order_array">
+        <item>Newest</item>
+        <item>Oldest</item>
+    </string-array>
+
 </resources>

@@ -1,6 +1,6 @@
 package com.codepath.nytimessearch.network;
 
-import com.codepath.nytimessearch.models.Setting;
+import com.codepath.nytimessearch.models.SearchFilter;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
@@ -33,32 +33,32 @@ public class NewYorkTimesClient {
    * @param query
    * @param handler
    */
-  public void getArticles(String query, Setting setting, JsonHttpResponseHandler handler){
+  public void getArticles(String query, SearchFilter searchFilter, JsonHttpResponseHandler handler){
     RequestParams params = new RequestParams();
     params.put("api-key", API_KEY);
     params.put("page", 0);
     params.put("q", query);
-    if(setting.getBeginDate() != null && !setting.getBeginDate().isEmpty()){
+    if(searchFilter.getBeginDate() != null && !searchFilter.getBeginDate().isEmpty()){
       try {
-        Date date = new SimpleDateFormat("yyyy-MM-dd", Locale.US).parse(setting.getBeginDate());
+        Date date = new SimpleDateFormat("yyyy-MM-dd", Locale.US).parse(searchFilter.getBeginDate());
         params.put("begin_date", new SimpleDateFormat("yyyyMMdd", Locale.US).format(date));
       } catch (ParseException e) {
         e.printStackTrace();
       }
     }
-    if(setting.getSortOrder() != null){
-      params.put("sort", setting.getSortOrder().toLowerCase());
+    if(searchFilter.getSortOrder() != null){
+      params.put("sort", searchFilter.getSortOrder().toLowerCase());
     }
 
     //&fq=news_desk:("Sports" "Foreign")
     StringBuilder newsDesk = new StringBuilder();
-    if(setting.getArts()){
+    if(searchFilter.getArts()){
       newsDesk.append("\"Arts\" ");
     }
-    if(setting.getFashionStyle()){
+    if(searchFilter.getFashionStyle()){
       newsDesk.append("\"Fashion & Style\" ");
     }
-    if(setting.getSports()){
+    if(searchFilter.getSports()){
       newsDesk.append("\"Sports\"");
     }
     if(newsDesk.length() > 0){

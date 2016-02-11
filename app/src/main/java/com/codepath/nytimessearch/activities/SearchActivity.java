@@ -16,7 +16,7 @@ import android.widget.GridView;
 import com.codepath.nytimessearch.R;
 import com.codepath.nytimessearch.adapters.ArticleArrayAdapter;
 import com.codepath.nytimessearch.models.Article;
-import com.codepath.nytimessearch.models.Setting;
+import com.codepath.nytimessearch.models.SearchFilter;
 import com.codepath.nytimessearch.network.NewYorkTimesClient;
 import com.loopj.android.http.JsonHttpResponseHandler;
 
@@ -37,7 +37,7 @@ public class SearchActivity extends AppCompatActivity {
   ArrayList<Article> articles;
   ArticleArrayAdapter adapter;
 
-  Setting setting;
+  SearchFilter searchFilter;
 
 
 
@@ -50,8 +50,8 @@ public class SearchActivity extends AppCompatActivity {
     Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
     setSupportActionBar(toolbar);
 
-    if(setting == null){
-      setting = new Setting();
+    if(searchFilter == null){
+      searchFilter = new SearchFilter();
     }
 
     setupViews();
@@ -113,7 +113,7 @@ public class SearchActivity extends AppCompatActivity {
     // Call NYTimes
     NewYorkTimesClient newYorkTimesClient = new NewYorkTimesClient();
 
-    newYorkTimesClient.getArticles(query, setting, new JsonHttpResponseHandler() {
+    newYorkTimesClient.getArticles(query, searchFilter, new JsonHttpResponseHandler() {
       @Override
       public void onStart() {
         Log.d("DEBUG", "Request: " + super.getRequestURI().toString());
@@ -148,7 +148,7 @@ public class SearchActivity extends AppCompatActivity {
     // create
     Intent i = new Intent(getApplicationContext(), SettingsActivity.class);
     // pass data
-    i.putExtra("setting", setting);
+    i.putExtra("searchFilter", searchFilter);
     // launch
     startActivityForResult(i, REQUEST_CODE);
   }
@@ -161,7 +161,7 @@ public class SearchActivity extends AppCompatActivity {
 
     if(resultCode == RESULT_OK && requestCode == REQUEST_CODE){
       // Extract name value from result extras
-      setting = (Setting) i.getParcelableExtra("setting");
+      searchFilter = (SearchFilter) i.getParcelableExtra("searchFilter");
     }
 
   }

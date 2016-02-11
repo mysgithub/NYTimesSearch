@@ -6,7 +6,7 @@ import android.os.Parcelable;
 /**
  * Created by Shyam Rokde on 2/10/16.
  */
-public class Setting implements Parcelable{
+public class SearchFilter implements Parcelable{
   public String getBeginDate() {
     return beginDate;
   }
@@ -67,10 +67,10 @@ public class Setting implements Parcelable{
     dest.writeValue(this.sports);
   }
 
-  public Setting() {
+  public SearchFilter() {
   }
 
-  protected Setting(Parcel in) {
+  protected SearchFilter(Parcel in) {
     this.beginDate = in.readString();
     this.sortOrder = in.readString();
     this.arts = (Boolean) in.readValue(Boolean.class.getClassLoader());
@@ -78,13 +78,13 @@ public class Setting implements Parcelable{
     this.sports = (Boolean) in.readValue(Boolean.class.getClassLoader());
   }
 
-  public static final Creator<Setting> CREATOR = new Creator<Setting>() {
-    public Setting createFromParcel(Parcel source) {
-      return new Setting(source);
+  public static final Creator<SearchFilter> CREATOR = new Creator<SearchFilter>() {
+    public SearchFilter createFromParcel(Parcel source) {
+      return new SearchFilter(source);
     }
 
-    public Setting[] newArray(int size) {
-      return new Setting[size];
+    public SearchFilter[] newArray(int size) {
+      return new SearchFilter[size];
     }
   };
 }

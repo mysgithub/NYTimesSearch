@@ -13,7 +13,7 @@ import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.codepath.nytimessearch.R;
-import com.codepath.nytimessearch.models.Setting;
+import com.codepath.nytimessearch.models.SearchFilter;
 import com.fourmob.datetimepicker.date.DatePickerDialog;
 
 import java.text.ParseException;
@@ -30,7 +30,7 @@ public class SettingsActivity extends AppCompatActivity implements DatePickerDia
   CheckBox cbSports;
   Button btnSave;
 
-  Setting setting;
+  SearchFilter searchFilter;
 
   public static final String DATEPICKER_TAG = "datepicker";
 
@@ -47,8 +47,8 @@ public class SettingsActivity extends AppCompatActivity implements DatePickerDia
     Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
     setSupportActionBar(toolbar);
 
-    // Extract Setting object from intent extras
-    setting = (Setting) getIntent().getParcelableExtra("setting");
+    // Extract SearchFilter object from intent extras
+    searchFilter = (SearchFilter) getIntent().getParcelableExtra("searchFilter");
 
     setupViews();
     setData();
@@ -70,29 +70,29 @@ public class SettingsActivity extends AppCompatActivity implements DatePickerDia
 
   public void setData(){
 
-    if(setting.getBeginDate() != null && !setting.getBeginDate().isEmpty()){
-      etBeginDate.setText(setting.getBeginDate());
+    if(searchFilter.getBeginDate() != null && !searchFilter.getBeginDate().isEmpty()){
+      etBeginDate.setText(searchFilter.getBeginDate());
     }
-    if(setting.getSortOrder() != null){
-      int spinnerPosition = spinnerAdapter.getPosition(setting.getSortOrder());
+    if(searchFilter.getSortOrder() != null){
+      int spinnerPosition = spinnerAdapter.getPosition(searchFilter.getSortOrder());
       sortOrderSpinner.setSelection(spinnerPosition);
     }
 
-    cbArts.setChecked(setting.getArts());
-    cbFashionStyle.setChecked(setting.getFashionStyle());
-    cbSports.setChecked(setting.getSports());
+    cbArts.setChecked(searchFilter.getArts());
+    cbFashionStyle.setChecked(searchFilter.getFashionStyle());
+    cbSports.setChecked(searchFilter.getSports());
   }
 
   public void onSave(View view){
     // Set values
-    setting.setBeginDate(etBeginDate.getText().toString());
-    setting.setSortOrder(sortOrderSpinner.getSelectedItem().toString());
-    setting.setArts(cbArts.isChecked());
-    setting.setFashionStyle(cbFashionStyle.isChecked());
-    setting.setSports(cbSports.isChecked());
+    searchFilter.setBeginDate(etBeginDate.getText().toString());
+    searchFilter.setSortOrder(sortOrderSpinner.getSelectedItem().toString());
+    searchFilter.setArts(cbArts.isChecked());
+    searchFilter.setFashionStyle(cbFashionStyle.isChecked());
+    searchFilter.setSports(cbSports.isChecked());
     // Prepare data intent
     Intent i = new Intent();
-    i.putExtra("setting", setting);
+    i.putExtra("searchFilter", searchFilter);
     // Activity finished ok, return the data
     setResult(RESULT_OK, i); // set result code and bundle data for response
     finish(); // closes the activity, pass data to parent
@@ -103,11 +103,11 @@ public class SettingsActivity extends AppCompatActivity implements DatePickerDia
     // set Date Picker to current date or already selected date
     final Calendar calendar = Calendar.getInstance();
 
-    if(setting.getBeginDate() != null && !setting.getBeginDate().isEmpty()){
+    if(searchFilter.getBeginDate() != null && !searchFilter.getBeginDate().isEmpty()){
       SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
       Date date = new Date();
       try {
-        date = dateFormat.parse(setting.getBeginDate());
+        date = dateFormat.parse(searchFilter.getBeginDate());
         calendar.setTime(date);
       } catch (ParseException e) {
         e.printStackTrace();

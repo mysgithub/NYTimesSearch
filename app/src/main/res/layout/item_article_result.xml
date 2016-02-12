@@ -9,6 +9,7 @@
         android:layout_height="75dp"
         android:id="@+id/ivImage"
         android:src="@mipmap/ic_launcher"
+        android:adjustViewBounds="true"
         android:scaleType="center"/>
     <TextView
         android:id="@+id/tvTitle"

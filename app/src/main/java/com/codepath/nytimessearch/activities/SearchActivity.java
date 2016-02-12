@@ -2,15 +2,15 @@ package com.codepath.nytimessearch.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.Button;
-import android.widget.EditText;
 import android.widget.GridView;
 
 import com.codepath.nytimessearch.R;
@@ -30,9 +30,7 @@ import cz.msebera.android.httpclient.Header;
 
 public class SearchActivity extends AppCompatActivity {
 
-  EditText etQuery;
   GridView gvResults;
-  Button btnSearch;
 
   ArrayList<Article> articles;
   ArticleArrayAdapter adapter;
@@ -58,9 +56,7 @@ public class SearchActivity extends AppCompatActivity {
   }
 
   public void setupViews(){
-    etQuery = (EditText) findViewById(R.id.etQuery);
     gvResults = (GridView) findViewById(R.id.gvResults);
-    btnSearch = (Button) findViewById(R.id.btnSearch);
 
     articles = new ArrayList<>();
     adapter = new ArticleArrayAdapter(this, articles);
@@ -76,7 +72,6 @@ public class SearchActivity extends AppCompatActivity {
         Article article = articles.get(position);
         // pass
         i.putExtra("article", article);
-
         // launch
         startActivity(i);
       }
@@ -87,7 +82,52 @@ public class SearchActivity extends AppCompatActivity {
   public boolean onCreateOptionsMenu(Menu menu) {
     // Inflate the menu; this adds items to the action bar if it is present.
     getMenuInflater().inflate(R.menu.menu_search, menu);
-    return true;
+
+    // Handle Search
+    MenuItem searchItem = menu.findItem(R.id.action_search);
+    final SearchView searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
+    searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+      @Override
+      public boolean onQueryTextSubmit(String query) {
+        // Call NYTimes
+        NewYorkTimesClient newYorkTimesClient = new NewYorkTimesClient();
+        newYorkTimesClient.getArticles(query, searchFilter, new JsonHttpResponseHandler() {
+          @Override
+          public void onStart() {
+            Log.d("DEBUG", "Request: " + super.getRequestURI().toString());
+          }
+
+          @Override
+          public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+            // CLEAR OUT old items before appending in the new ones
+            adapter.clear();
+            Log.d("DEBUG", "Response: " + response.toString());
+            JSONArray articleJsonResults = null;
+            try {
+              articleJsonResults = response.getJSONObject("response").getJSONArray("docs");
+              adapter.addAll(Article.fromJSONArray(articleJsonResults));
+              //Log.d("DEBUG", articles.toString());
+            }catch (JSONException ex){
+              ex.printStackTrace();
+            }
+          }
+          @Override
+          public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+            // TODO: Add Correct Error Handling if not able to communicate to NYTimes
+            Log.d("DEBUG", responseString);
+          }
+        });
+        searchView.clearFocus();
+        return true;
+      }
+
+      @Override
+      public boolean onQueryTextChange(String newText) {
+        return false;
+      }
+    });
+
+    return super.onCreateOptionsMenu(menu);
   }
 
   @Override
@@ -106,42 +146,6 @@ public class SearchActivity extends AppCompatActivity {
     }
 
   }
-
-  public void onArticleSearch(View view) {
-    String query = etQuery.getText().toString();
-
-    // Call NYTimes
-    NewYorkTimesClient newYorkTimesClient = new NewYorkTimesClient();
-
-    newYorkTimesClient.getArticles(query, searchFilter, new JsonHttpResponseHandler() {
-      @Override
-      public void onStart() {
-        Log.d("DEBUG", "Request: " + super.getRequestURI().toString());
-      }
-
-      @Override
-      public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-        // CLEAR OUT old items before appending in the new ones
-        adapter.clear();
-        Log.d("DEBUG", "Response: " + response.toString());
-        JSONArray articleJsonResults = null;
-        try {
-          articleJsonResults = response.getJSONObject("response").getJSONArray("docs");
-          adapter.addAll(Article.fromJSONArray(articleJsonResults));
-          //Log.d("DEBUG", articles.toString());
-        }catch (JSONException ex){
-          ex.printStackTrace();
-        }
-      }
-      @Override
-      public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-        // TODO: Add Correct Error Handling if not able to communicate to NYTimes
-        Log.d("DEBUG", responseString);
-      }
-    });
-
-  }
-
 
 
   public void showSettings(){

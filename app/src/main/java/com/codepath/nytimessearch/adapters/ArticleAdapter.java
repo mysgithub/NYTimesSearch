@@ -34,7 +34,7 @@ public class ArticleAdapter extends RecyclerView.Adapter<ArticleAdapter.ViewHold
   /**
    * ViewHolder
    */
-  public static class ViewHolder extends RecyclerView.ViewHolder {
+  public static class ViewHolder extends RecyclerView.ViewHolder  {
 
     @Bind(R.id.ivImage) ImageView ivImage;
     @Bind(R.id.tvTitle) TextView tvTitle;
@@ -43,6 +43,7 @@ public class ArticleAdapter extends RecyclerView.Adapter<ArticleAdapter.ViewHold
       super(itemView);
       ButterKnife.bind(this, itemView);
     }
+
   }
 
   @Override

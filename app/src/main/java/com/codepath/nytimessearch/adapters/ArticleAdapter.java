@@ -15,6 +15,9 @@ import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
+import butterknife.Bind;
+import butterknife.ButterKnife;
+
 /**
  * Created by Shyam Rokde on 2/11/16.
  */
@@ -33,14 +36,12 @@ public class ArticleAdapter extends RecyclerView.Adapter<ArticleAdapter.ViewHold
    */
   public static class ViewHolder extends RecyclerView.ViewHolder {
 
-    public ImageView ivImage;
-    public TextView tvTitle;
+    @Bind(R.id.ivImage) ImageView ivImage;
+    @Bind(R.id.tvTitle) TextView tvTitle;
 
     public ViewHolder(final View itemView) {
       super(itemView);
-
-      ivImage = (ImageView) itemView.findViewById(R.id.ivImage);
-      tvTitle = (TextView) itemView.findViewById(R.id.tvTitle);
+      ButterKnife.bind(this, itemView);
     }
   }
 

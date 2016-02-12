@@ -28,11 +28,13 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
+import butterknife.Bind;
+import butterknife.ButterKnife;
 import cz.msebera.android.httpclient.Header;
 
 public class SearchActivity extends AppCompatActivity {
 
-  RecyclerView rvItems;
+  @Bind(R.id.rvArticles) RecyclerView rvItems;
 
   ArrayList<Article> articles;
   ArticleAdapter adapter;
@@ -46,6 +48,7 @@ public class SearchActivity extends AppCompatActivity {
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_search);
+    ButterKnife.bind(this);
 
     if(searchFilter == null){
       searchFilter = new SearchFilter();
@@ -55,8 +58,6 @@ public class SearchActivity extends AppCompatActivity {
   }
 
   public void setupViews(){
-    //gvResults = (GridView) findViewById(R.id.gvResults);
-    rvItems = (RecyclerView) findViewById(R.id.rvArticles);
 
     articles = new ArrayList<>();
     //adapter = new ArticleArrayAdapter(this, articles);

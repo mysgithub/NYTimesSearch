@@ -6,7 +6,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Spinner;
@@ -21,14 +20,18 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
+import butterknife.Bind;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
+
 public class SettingsActivity extends AppCompatActivity implements DatePickerDialog.OnDateSetListener {
 
-  EditText etBeginDate;
-  Spinner sortOrderSpinner;
-  CheckBox cbArts;
-  CheckBox cbFashionStyle;
-  CheckBox cbSports;
-  Button btnSave;
+  @Bind(R.id.etBeginDate) EditText etBeginDate;
+  @Bind(R.id.sortOrderSpinner) Spinner sortOrderSpinner;
+  @Bind(R.id.cbArts) CheckBox cbArts;
+  @Bind(R.id.cbFashionStyle) CheckBox cbFashionStyle;
+  @Bind(R.id.cbSports) CheckBox cbSports;
+  @Bind(R.id.toolbar) Toolbar toolbar;
 
   SearchFilter searchFilter;
 
@@ -44,28 +47,22 @@ public class SettingsActivity extends AppCompatActivity implements DatePickerDia
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_settings);
-    Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-    setSupportActionBar(toolbar);
 
-    // Extract SearchFilter object from intent extras
-    searchFilter = (SearchFilter) getIntent().getParcelableExtra("searchFilter");
+    ButterKnife.bind(this);
 
     setupViews();
-    setData();
   }
 
   public void setupViews(){
-    etBeginDate = (EditText) findViewById(R.id.etBeginDate);
-    sortOrderSpinner = (Spinner) findViewById(R.id.sortOrderSpinner);
-    cbArts = (CheckBox) findViewById(R.id.cbArts);
-    cbFashionStyle = (CheckBox) findViewById(R.id.cbFashionStyle);
-    cbSports = (CheckBox) findViewById(R.id.cbSports);
-    btnSave = (Button) findViewById(R.id.btnSave);
+    setSupportActionBar(toolbar);
+    // Extract SearchFilter object from intent extras
+    searchFilter = (SearchFilter) getIntent().getParcelableExtra("searchFilter");
 
     spinnerAdapter = ArrayAdapter.createFromResource(this, R.array.sort_order_array, R.layout.support_simple_spinner_dropdown_item);
     sortOrderSpinner.setAdapter(spinnerAdapter);
 
     showDatePicker();
+    setData();
   }
 
   public void setData(){
@@ -83,6 +80,7 @@ public class SettingsActivity extends AppCompatActivity implements DatePickerDia
     cbSports.setChecked(searchFilter.getSports());
   }
 
+  @OnClick(R.id.btnSave)
   public void onSave(View view){
     // Set values
     searchFilter.setBeginDate(etBeginDate.getText().toString());
@@ -105,9 +103,8 @@ public class SettingsActivity extends AppCompatActivity implements DatePickerDia
 
     if(searchFilter.getBeginDate() != null && !searchFilter.getBeginDate().isEmpty()){
       SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-      Date date = new Date();
       try {
-        date = dateFormat.parse(searchFilter.getBeginDate());
+        Date date = dateFormat.parse(searchFilter.getBeginDate());
         calendar.setTime(date);
       } catch (ParseException e) {
         e.printStackTrace();

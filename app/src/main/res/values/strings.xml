@@ -13,9 +13,11 @@
     <string name="arts">Arts</string>
     <string name="fashion_style"><![CDATA[Fashion & Style]]></string>
     <string name="sports">Sports</string>
+    <string name="no_network">Unable to connect to internet</string>
     <string-array name="sort_order_array">
         <item>Newest</item>
         <item>Oldest</item>
     </string-array>
+
 
 </resources>

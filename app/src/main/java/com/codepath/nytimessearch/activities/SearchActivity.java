@@ -1,20 +1,22 @@
 package com.codepath.nytimessearch.activities;
 
+import android.content.Context;
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
+import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.AdapterView;
-import android.widget.GridView;
 
 import com.codepath.nytimessearch.R;
-import com.codepath.nytimessearch.adapters.ArticleArrayAdapter;
-import com.codepath.nytimessearch.listeners.EndlessScrollListener;
+import com.codepath.nytimessearch.adapters.ArticleAdapter;
+import com.codepath.nytimessearch.listeners.EndlessRecyclerViewScrollListener;
 import com.codepath.nytimessearch.models.Article;
 import com.codepath.nytimessearch.models.SearchFilter;
 import com.codepath.nytimessearch.network.NewYorkTimesClient;
@@ -30,10 +32,10 @@ import cz.msebera.android.httpclient.Header;
 
 public class SearchActivity extends AppCompatActivity {
 
-  GridView gvResults;
+  RecyclerView rvItems;
 
   ArrayList<Article> articles;
-  ArticleArrayAdapter adapter;
+  ArticleAdapter adapter;
 
   SearchFilter searchFilter;
   String mQuery;
@@ -53,16 +55,21 @@ public class SearchActivity extends AppCompatActivity {
   }
 
   public void setupViews(){
-    gvResults = (GridView) findViewById(R.id.gvResults);
+    //gvResults = (GridView) findViewById(R.id.gvResults);
+    rvItems = (RecyclerView) findViewById(R.id.rvArticles);
 
     articles = new ArrayList<>();
-    adapter = new ArticleArrayAdapter(this, articles);
-    gvResults.setAdapter(adapter);
+    //adapter = new ArticleArrayAdapter(this, articles);
+    adapter = new ArticleAdapter(articles, getApplicationContext());
+    rvItems.setAdapter(adapter);
 
-    // infinite scroll
-    gvResults.setOnScrollListener(new EndlessScrollListener() {
+    // Configure the RecyclerView
+    StaggeredGridLayoutManager linearLayoutManager = new StaggeredGridLayoutManager(4, StaggeredGridLayoutManager.VERTICAL);
+    rvItems.setLayoutManager(linearLayoutManager);
+
+    rvItems.addOnScrollListener(new EndlessRecyclerViewScrollListener(linearLayoutManager) {
       @Override
-      public boolean onLoadMore(int page, int totalItemsCount) {
+      public void onLoadMore(int page, int totalItemsCount) {
         // Call NYTimes
         NewYorkTimesClient newYorkTimesClient = new NewYorkTimesClient();
         newYorkTimesClient.getArticles(mQuery, searchFilter, page, new JsonHttpResponseHandler() {
@@ -78,7 +85,9 @@ public class SearchActivity extends AppCompatActivity {
             JSONArray articleJsonResults = null;
             try {
               articleJsonResults = response.getJSONObject("response").getJSONArray("docs");
-              adapter.addAll(Article.fromJSONArray(articleJsonResults));
+              articles.addAll(Article.fromJSONArray(articleJsonResults));
+              int curSize = adapter.getItemCount();
+              adapter.notifyItemRangeInserted(curSize, articles.size() - 1);
               //Log.d("DEBUG", articles.toString());
             } catch (JSONException ex) {
               ex.printStackTrace();
@@ -91,24 +100,9 @@ public class SearchActivity extends AppCompatActivity {
             Log.d("DEBUG", responseString);
           }
         });
-        return true;
       }
     });
 
-    // listener for grid click
-    gvResults.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-      @Override
-      public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        // create
-        Intent i = new Intent(getApplicationContext(), ArticleActivity.class);
-        // get
-        Article article = articles.get(position);
-        // pass
-        i.putExtra("article", article);
-        // launch
-        startActivity(i);
-      }
-    });
   }
 
   @Override
@@ -122,7 +116,10 @@ public class SearchActivity extends AppCompatActivity {
     searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
       @Override
       public boolean onQueryTextSubmit(String query) {
+
         mQuery = query;
+        // CLEAR OUT old items before appending in the new ones
+        adapter.clear();
         // Call NYTimes
         NewYorkTimesClient newYorkTimesClient = new NewYorkTimesClient();
         newYorkTimesClient.getArticles(mQuery, searchFilter, 0, new JsonHttpResponseHandler() {
@@ -133,18 +130,19 @@ public class SearchActivity extends AppCompatActivity {
 
           @Override
           public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-            // CLEAR OUT old items before appending in the new ones
-            adapter.clear();
             Log.d("DEBUG", "Response: " + response.toString());
             JSONArray articleJsonResults = null;
             try {
               articleJsonResults = response.getJSONObject("response").getJSONArray("docs");
-              adapter.addAll(Article.fromJSONArray(articleJsonResults));
+              articles.addAll(Article.fromJSONArray(articleJsonResults));
+              int curSize = adapter.getItemCount();
+              adapter.notifyItemRangeInserted(curSize, articles.size() - 1);
               //Log.d("DEBUG", articles.toString());
-            }catch (JSONException ex){
+            } catch (JSONException ex) {
               ex.printStackTrace();
             }
           }
+
           @Override
           public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
             // TODO: Add Correct Error Handling if not able to communicate to NYTimes
@@ -181,7 +179,6 @@ public class SearchActivity extends AppCompatActivity {
 
   }
 
-
   public void showSettings(){
     // create
     Intent i = new Intent(getApplicationContext(), SettingsActivity.class);
@@ -202,5 +199,13 @@ public class SearchActivity extends AppCompatActivity {
       searchFilter = (SearchFilter) i.getParcelableExtra("searchFilter");
     }
 
+  }
+
+  private Boolean isNetworkAvailable(){
+    ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+
+    NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
+
+    return networkInfo != null && networkInfo.isConnectedOrConnecting();
   }
 }

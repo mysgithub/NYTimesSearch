@@ -33,10 +33,10 @@ public class NewYorkTimesClient {
    * @param query
    * @param handler
    */
-  public void getArticles(String query, SearchFilter searchFilter, JsonHttpResponseHandler handler){
+  public void getArticles(String query, SearchFilter searchFilter, int page, JsonHttpResponseHandler handler){
     RequestParams params = new RequestParams();
     params.put("api-key", API_KEY);
-    params.put("page", 0);
+    params.put("page", page);
     params.put("q", query);
     if(searchFilter.getBeginDate() != null && !searchFilter.getBeginDate().isEmpty()){
       try {

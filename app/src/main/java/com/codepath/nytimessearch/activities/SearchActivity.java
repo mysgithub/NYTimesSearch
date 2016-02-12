@@ -14,6 +14,7 @@ import android.widget.GridView;
 
 import com.codepath.nytimessearch.R;
 import com.codepath.nytimessearch.adapters.ArticleArrayAdapter;
+import com.codepath.nytimessearch.listeners.EndlessScrollListener;
 import com.codepath.nytimessearch.models.Article;
 import com.codepath.nytimessearch.models.SearchFilter;
 import com.codepath.nytimessearch.network.NewYorkTimesClient;
@@ -35,8 +36,7 @@ public class SearchActivity extends AppCompatActivity {
   ArticleArrayAdapter adapter;
 
   SearchFilter searchFilter;
-
-
+  String mQuery;
 
   private final int REQUEST_CODE = 200;
 
@@ -58,6 +58,42 @@ public class SearchActivity extends AppCompatActivity {
     articles = new ArrayList<>();
     adapter = new ArticleArrayAdapter(this, articles);
     gvResults.setAdapter(adapter);
+
+    // infinite scroll
+    gvResults.setOnScrollListener(new EndlessScrollListener() {
+      @Override
+      public boolean onLoadMore(int page, int totalItemsCount) {
+        // Call NYTimes
+        NewYorkTimesClient newYorkTimesClient = new NewYorkTimesClient();
+        newYorkTimesClient.getArticles(mQuery, searchFilter, page, new JsonHttpResponseHandler() {
+          @Override
+          public void onStart() {
+            Log.d("DEBUG", "Request: " + super.getRequestURI().toString());
+          }
+
+          @Override
+          public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+            // CLEAR OUT old items before appending in the new ones
+            Log.d("DEBUG", "Response: " + response.toString());
+            JSONArray articleJsonResults = null;
+            try {
+              articleJsonResults = response.getJSONObject("response").getJSONArray("docs");
+              adapter.addAll(Article.fromJSONArray(articleJsonResults));
+              //Log.d("DEBUG", articles.toString());
+            } catch (JSONException ex) {
+              ex.printStackTrace();
+            }
+          }
+
+          @Override
+          public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+            // TODO: Add Correct Error Handling if not able to communicate to NYTimes
+            Log.d("DEBUG", responseString);
+          }
+        });
+        return true;
+      }
+    });
 
     // listener for grid click
     gvResults.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -86,9 +122,10 @@ public class SearchActivity extends AppCompatActivity {
     searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
       @Override
       public boolean onQueryTextSubmit(String query) {
+        mQuery = query;
         // Call NYTimes
         NewYorkTimesClient newYorkTimesClient = new NewYorkTimesClient();
-        newYorkTimesClient.getArticles(query, searchFilter, new JsonHttpResponseHandler() {
+        newYorkTimesClient.getArticles(mQuery, searchFilter, 0, new JsonHttpResponseHandler() {
           @Override
           public void onStart() {
             Log.d("DEBUG", "Request: " + super.getRequestURI().toString());

@@ -27,33 +27,50 @@ public class Article implements Serializable{
     return thumbnail;
   }
 
-  public Article(JSONObject jsonObject){
+  public Article(){
+
+  }
+
+
+  public static Article fromJson(JSONObject jsonObject){
+    Article a = new Article();
+    // Deserialize json into object fields
     try{
-      this.webUrl = jsonObject.getString("web_url");
-      this.headline = jsonObject.getJSONObject("headline").getString("main");
+      a.webUrl = jsonObject.getString("web_url");
+      a.headline = jsonObject.getJSONObject("headline").getString("main");
       JSONArray multimedia = jsonObject.getJSONArray("multimedia");
       if(multimedia.length() > 0){
         JSONObject multimediaJson = multimedia.getJSONObject(0);
-        this.thumbnail = "http://www.nytimes.com/" + multimediaJson.getString("url");
+        a.thumbnail = "http://www.nytimes.com/" + multimediaJson.getString("url");
       }else{
-        this.thumbnail = "";
+        a.thumbnail = "";
       }
     }catch (JSONException ex){
       ex.printStackTrace();
+      return null;
     }
+    // Return new object
+    return a;
   }
 
-  public static ArrayList<Article> fromJSONArray(JSONArray array){
-    ArrayList<Article> results = new ArrayList<>();
+  public static ArrayList<Article> fromJson(JSONArray jsonArray){
+    ArrayList<Article> articles = new ArrayList<Article>(jsonArray.length());
 
-    for(int i=0; i < array.length(); i++){
-      try {
-        results.add(new Article(array.getJSONObject(i)));
-      } catch (JSONException e) {
+    for (int i=0; i < jsonArray.length(); i++) {
+      JSONObject articleJson = null;
+      try{
+        articleJson = jsonArray.getJSONObject(i);
+      }catch (Exception e){
         e.printStackTrace();
+        continue;
+      }
+      Article article = Article.fromJson(articleJson);
+      if(article != null){
+        articles.add(article);
       }
     }
 
-    return results;
+    return articles;
   }
+
 }

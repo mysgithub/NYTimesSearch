@@ -22,9 +22,11 @@ import com.codepath.nytimessearch.adapters.ArticleAdapter;
 import com.codepath.nytimessearch.listeners.EndlessRecyclerViewScrollListener;
 import com.codepath.nytimessearch.models.Article;
 import com.codepath.nytimessearch.models.SearchFilter;
+import com.codepath.nytimessearch.models.nytimes.ApiResponse;
 import com.codepath.nytimessearch.network.NewYorkTimesClient;
 import com.codepath.nytimessearch.utils.ItemClickSupport;
 import com.loopj.android.http.JsonHttpResponseHandler;
+import com.loopj.android.http.TextHttpResponseHandler;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -88,6 +90,7 @@ public class SearchActivity extends AppCompatActivity implements SettingsDialog.
         // Call NYTimes
         NewYorkTimesClient newYorkTimesClient = new NewYorkTimesClient();
         newYorkTimesClient.getArticles(mQuery, searchFilter, page, getResponseHandler());
+        //--newYorkTimesClient.getArticles(mQuery, searchFilter, page, getTextHttpResponseHandler());
       }
     });
   }
@@ -108,6 +111,7 @@ public class SearchActivity extends AppCompatActivity implements SettingsDialog.
         // Call NYTimes
         NewYorkTimesClient newYorkTimesClient = new NewYorkTimesClient();
         newYorkTimesClient.getArticles(mQuery, searchFilter, 0, getResponseHandler());
+        //--newYorkTimesClient.getArticles(mQuery, searchFilter, 0, getTextHttpResponseHandler());
         searchView.clearFocus();
         return true;
       }
@@ -154,10 +158,11 @@ public class SearchActivity extends AppCompatActivity implements SettingsDialog.
       public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
         // CLEAR OUT old items before appending in the new ones
         Log.d("DEBUG", "Response: " + response.toString());
-        JSONArray articleJsonResults = null;
+
         try {
-          articleJsonResults = response.getJSONObject("response").getJSONArray("docs");
-          articles.addAll(Article.fromJSONArray(articleJsonResults));
+          JSONArray articleJsonResults = response.getJSONObject("response").getJSONArray("docs");
+          articles.addAll(Article.fromJson(articleJsonResults));
+
           int curSize = adapter.getItemCount();
           adapter.notifyItemRangeInserted(curSize, articles.size() - 1);
           //Log.d("DEBUG", articles.toString());
@@ -173,6 +178,22 @@ public class SearchActivity extends AppCompatActivity implements SettingsDialog.
       }
     };
   }
+
+  public TextHttpResponseHandler getTextHttpResponseHandler(){
+    return new TextHttpResponseHandler() {
+      @Override
+      public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+
+      }
+
+      @Override
+      public void onSuccess(int statusCode, Header[] headers, String responseString) {
+        ApiResponse response = ApiResponse.fromJson(responseString);
+        Log.d("DEBUG", "How is this?");
+      }
+    };
+  }
+
 
   /**
    * Setting Activity
@@ -231,6 +252,7 @@ public class SearchActivity extends AppCompatActivity implements SettingsDialog.
   @Override
   public void onSettingChanged(SearchFilter searchFilter) {
     this.searchFilter = searchFilter;
+    //TODO - Remove Toast
     Toast.makeText(this, "new date: " + searchFilter.getBeginDate(), Toast.LENGTH_LONG).show();
   }
 }

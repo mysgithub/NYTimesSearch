@@ -4,6 +4,7 @@ import com.codepath.nytimessearch.models.SearchFilter;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
+import com.loopj.android.http.TextHttpResponseHandler;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -29,11 +30,60 @@ public class NewYorkTimesClient {
   }
 
   /**
-   * Get Articles
+   * Get Articles JsonHttpResponseHandler
+   *
    * @param query
+   * @param searchFilter
+   * @param page
    * @param handler
    */
   public void getArticles(String query, SearchFilter searchFilter, int page, JsonHttpResponseHandler handler){
+    RequestParams params = new RequestParams();
+    params.put("api-key", API_KEY);
+    params.put("page", page);
+    params.put("q", query);
+    if(searchFilter.getBeginDate() != null && !searchFilter.getBeginDate().isEmpty()){
+      try {
+        Date date = new SimpleDateFormat("yyyy-MM-dd", Locale.US).parse(searchFilter.getBeginDate());
+        params.put("begin_date", new SimpleDateFormat("yyyyMMdd", Locale.US).format(date));
+      } catch (ParseException e) {
+        e.printStackTrace();
+      }
+    }
+    if(searchFilter.getSortOrder() != null){
+      params.put("sort", searchFilter.getSortOrder().toLowerCase());
+    }
+
+    //&fq=news_desk:("Sports" "Foreign")
+    StringBuilder newsDesk = new StringBuilder();
+    if(searchFilter.getArts()){
+      newsDesk.append("\"Arts\" ");
+    }
+    if(searchFilter.getFashionStyle()){
+      newsDesk.append("\"Fashion & Style\" ");
+    }
+    if(searchFilter.getSports()){
+      newsDesk.append("\"Sports\"");
+    }
+    if(newsDesk.length() > 0){
+      newsDesk.insert(0, "news_desk:(");
+      newsDesk.append(")");
+      params.put("fq", newsDesk.toString());
+    }
+
+    client.get(getApiUrl("svc/search/v2/articlesearch.json"), params, handler);
+
+  }
+
+  /**
+   * Get Articles TextHttpResponseHandler
+   *
+   * @param query
+   * @param searchFilter
+   * @param page
+   * @param handler
+   */
+  public void getArticles(String query, SearchFilter searchFilter, int page, TextHttpResponseHandler handler){
     RequestParams params = new RequestParams();
     params.put("api-key", API_KEY);
     params.put("page", page);

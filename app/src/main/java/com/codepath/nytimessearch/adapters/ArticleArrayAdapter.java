@@ -11,7 +11,6 @@ import android.widget.TextView;
 
 import com.codepath.nytimessearch.R;
 import com.codepath.nytimessearch.models.Article;
-import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
@@ -46,7 +45,7 @@ public class ArticleArrayAdapter extends ArrayAdapter<Article>{
 
     String thumbnail = article.getThumbnail();
     if(!TextUtils.isEmpty(thumbnail)){
-      Picasso.with(getContext()).load(thumbnail).into(ivImage);
+      //--Picasso.with(getContext()).load(thumbnail).into(ivImage);
     }
 
     return convertView;

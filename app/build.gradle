@@ -31,10 +31,12 @@ dependencies {
     // async client JSON
     compile 'com.loopj.android:android-async-http:1.4.9'
     // picasso
-    compile 'com.squareup.picasso:picasso:2.5.2'
+    // compile 'com.squareup.picasso:picasso:2.5.2'
     // date picker
     compile 'com.github.flavienlaurent.datetimepicker:library:0.0.2'
     compile 'com.android.support:support-v4:23.1.1'
     // butterknife
     compile 'com.jakewharton:butterknife:7.0.1'
+    // glide
+    compile 'com.github.bumptech.glide:glide:3.5.2'
 }

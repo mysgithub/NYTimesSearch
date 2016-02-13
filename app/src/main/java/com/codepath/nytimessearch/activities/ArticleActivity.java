@@ -3,6 +3,7 @@ package com.codepath.nytimessearch.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.NavUtils;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
@@ -32,7 +33,8 @@ public class ArticleActivity extends AppCompatActivity {
     setContentView(R.layout.activity_article);
 
     ButterKnife.bind(this);
-
+    // Enable up icon
+    getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     // Get Data
     Article article = (Article) getIntent().getSerializableExtra("article");
 
@@ -62,12 +64,24 @@ public class ArticleActivity extends AppCompatActivity {
     mShareActionProvider = (ShareActionProvider) MenuItemCompat.getActionProvider(item);
     Intent shareIntent = new Intent(Intent.ACTION_SEND);
     shareIntent.setType("text/plain");
-
     // get reference to WebView
     shareIntent.putExtra(Intent.EXTRA_TEXT, wvArticle.getUrl());
+
     mShareActionProvider.setShareIntent(shareIntent);
 
-
     return super.onCreateOptionsMenu(menu);
+  }
+
+  @Override
+  public boolean onOptionsItemSelected(MenuItem item) {
+    // TODO: Lets check if this is needed or not if Manifest file already has UP..
+    switch (item.getItemId()) {
+      // This is the up button
+      case android.R.id.home:
+        NavUtils.navigateUpFromSameTask(this);
+        return true;
+    }
+
+    return super.onOptionsItemSelected(item);
   }
 }

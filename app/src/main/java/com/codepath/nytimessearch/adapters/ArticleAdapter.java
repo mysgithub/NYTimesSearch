@@ -9,9 +9,9 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.codepath.nytimessearch.R;
 import com.codepath.nytimessearch.models.Article;
-import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
@@ -66,7 +66,14 @@ public class ArticleAdapter extends RecyclerView.Adapter<ArticleAdapter.ViewHold
     viewHolder.tvTitle.setText(article.getHeadline());
     String thumbnail = article.getThumbnail();
     if(!TextUtils.isEmpty(thumbnail)){
-      Picasso.with(mContext).load(thumbnail).into(viewHolder.ivImage);
+      /*Picasso.with(mContext)
+          .load(thumbnail)
+          .fit()
+          .into(viewHolder.ivImage); */
+
+      Glide.with(mContext)
+          .load(thumbnail)
+          .into(viewHolder.ivImage);
     }
   }
 

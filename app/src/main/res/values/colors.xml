@@ -3,4 +3,7 @@
     <color name="colorPrimary">#3F51B5</color>
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#FF4081</color>
+    <color name="nyTimesColorPrimary">#5C32B1</color>
+    <color name="nyTimescolorPrimaryDark">#7242BF</color>
+    <color name="nyTimescolorcolorAccent">#5C32B1</color>
 </resources>

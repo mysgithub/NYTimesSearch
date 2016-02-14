@@ -24,7 +24,7 @@ The following **optional** features are implemented:
 * [X] Used the **ActionBar SearchView** or custom layout as the query box instead of an EditText
 * [X] User can **share an article link** to their friends or email it to themselves
 * [X] Replaced Filter Settings Activity with a lightweight modal overlay
-* [ ] Improved the user interface and experiment with image assets and/or styling and coloring
+* [X] Improved the user interface and experiment with image assets and/or styling and coloring
 
 The following **bonus** features are implemented:
 
@@ -36,7 +36,9 @@ The following **bonus** features are implemented:
 
 The following **additional** features are implemented:
 
-* [ ] List anything else that you can get done to improve the app functionality!
+* [X] Custom Spinner for Sort Order
+* [X] Flavien Laurent DateTimePicker 
+* [X] List anything else that you can get done to improve the app functionality!
 
 ## Video Walkthrough
 
@@ -54,10 +56,14 @@ Describe any challenges encountered while building the app.
 
 - [Android Async HTTP](https://github.com/loopj/android-async-http) - Simple asynchronous HTTP requests with JSON parsing
 - [Picasso](http://square.github.io/picasso/) - Image loading and caching library for Android
+- [Glide] (http://inthecheesefactory.com/blog/get-to-know-glide-recommended-by-google/en) - Image loading and caching library for Android 
+- [Butterknife annotation library](http://guides.codepath.com/android/Reducing-View-Boilerplate-with-Butterknife) - View "Injection" library for Android
+- [GSON library](http://guides.codepath.com/android/Using-Android-Async-Http-Client#decoding-with-gson-library) - Streamline the parsing of JSON data
+- [Flavien Laurent DateTimePicker] (https://github.com/flavienlaurent/datetimepicker) - Simple and beautiful DatePicker and TimePicker
 
 ## License
 
-    Copyright [yyyy] [name of copyright owner]
+    Copyright [2016] [Shyam Rokde]
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.

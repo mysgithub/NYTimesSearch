@@ -71,7 +71,7 @@ public class SettingsDialog extends DialogFragment implements DatePickerDialog.O
     super.onViewCreated(view, savedInstanceState);
 
     // Set Values
-    spinnerAdapter = ArrayAdapter.createFromResource(getContext(), R.array.sort_order_array, R.layout.support_simple_spinner_dropdown_item);
+    spinnerAdapter = ArrayAdapter.createFromResource(getContext(), R.array.sort_order_array, R.layout.spinner_item);
     sortOrderSpinner.setAdapter(spinnerAdapter);
     if(searchFilter.getBeginDate() != null && !searchFilter.getBeginDate().isEmpty()){
       etBeginDate.setText(searchFilter.getBeginDate());

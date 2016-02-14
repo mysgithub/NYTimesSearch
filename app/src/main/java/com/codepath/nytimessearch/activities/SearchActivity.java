@@ -83,6 +83,7 @@ public class SearchActivity extends AppCompatActivity implements SettingsDialog.
 
     // Configure the RecyclerView
     StaggeredGridLayoutManager layoutManager = new StaggeredGridLayoutManager(4, StaggeredGridLayoutManager.VERTICAL);
+    layoutManager.setGapStrategy(StaggeredGridLayoutManager.GAP_HANDLING_NONE);
     rvItems.setLayoutManager(layoutManager);
 
     rvItems.addOnScrollListener(new EndlessRecyclerViewScrollListener(layoutManager) {
@@ -102,7 +103,7 @@ public class SearchActivity extends AppCompatActivity implements SettingsDialog.
 
     // Check internet on load
     if (!isNetworkAvailable()) {
-      Toast.makeText(getApplicationContext(), R.string.no_network, Toast.LENGTH_LONG).show();
+      Toast.makeText(getApplicationContext(), R.string.error_no_network, Toast.LENGTH_LONG).show();
     }
   }
 
@@ -129,7 +130,7 @@ public class SearchActivity extends AppCompatActivity implements SettingsDialog.
         NewYorkTimesClient newYorkTimesClient = new NewYorkTimesClient();
         newYorkTimesClient.getArticles(mQuery, searchFilter, 0, getResponseHandler());
         //--newYorkTimesClient.getArticles(mQuery, searchFilter, 0, getTextHttpResponseHandler());
-        searchView.clearFocus();
+        searchView.clearFocus(); // clear focus to avoid keyboard enter twice
         return true;
       }
 

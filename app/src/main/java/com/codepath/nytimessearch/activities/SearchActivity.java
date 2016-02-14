@@ -82,6 +82,7 @@ public class SearchActivity extends AppCompatActivity implements SettingsDialog.
     });
 
     // Configure the RecyclerView
+    //GridLayoutManager layoutManager = new GridLayoutManager(getApplicationContext(), 4);
     StaggeredGridLayoutManager layoutManager = new StaggeredGridLayoutManager(4, StaggeredGridLayoutManager.VERTICAL);
     layoutManager.setGapStrategy(StaggeredGridLayoutManager.GAP_HANDLING_NONE);
     rvItems.setLayoutManager(layoutManager);

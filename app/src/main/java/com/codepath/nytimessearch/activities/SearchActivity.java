@@ -32,6 +32,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.IOException;
 import java.util.ArrayList;
 
 import butterknife.Bind;
@@ -87,12 +88,22 @@ public class SearchActivity extends AppCompatActivity implements SettingsDialog.
     rvItems.addOnScrollListener(new EndlessRecyclerViewScrollListener(layoutManager) {
       @Override
       public void onLoadMore(int page, int totalItemsCount) {
-        // Call NYTimes
-        NewYorkTimesClient newYorkTimesClient = new NewYorkTimesClient();
-        newYorkTimesClient.getArticles(mQuery, searchFilter, page, getResponseHandler());
-        //--newYorkTimesClient.getArticles(mQuery, searchFilter, page, getTextHttpResponseHandler());
+        if (!isNetworkAvailable()) {
+          // Show Toast - if no connection
+          Toast.makeText(getApplicationContext(), R.string.error_no_network, Toast.LENGTH_LONG).show();
+        } else {
+          // Call NYTimes
+          NewYorkTimesClient newYorkTimesClient = new NewYorkTimesClient();
+          newYorkTimesClient.getArticles(mQuery, searchFilter, page, getResponseHandler());
+          //--newYorkTimesClient.getArticles(mQuery, searchFilter, page, getTextHttpResponseHandler());
+        }
       }
     });
+
+    // Check internet on load
+    if (!isNetworkAvailable()) {
+      Toast.makeText(getApplicationContext(), R.string.no_network, Toast.LENGTH_LONG).show();
+    }
   }
 
   @Override
@@ -106,6 +117,12 @@ public class SearchActivity extends AppCompatActivity implements SettingsDialog.
     searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
       @Override
       public boolean onQueryTextSubmit(String query) {
+        // Show Toast - if no connection
+        if (!isNetworkAvailable()) {
+          Toast.makeText(getApplicationContext(), R.string.error_no_network, Toast.LENGTH_LONG).show();
+          return false;
+        }
+
         mQuery = query;
         adapter.clear(); // CLEAR OUT old items before appending in the new ones
         // Call NYTimes
@@ -148,6 +165,8 @@ public class SearchActivity extends AppCompatActivity implements SettingsDialog.
    * @return JsonHttpResponseHandler
    */
   public JsonHttpResponseHandler getResponseHandler(){
+
+
     return new JsonHttpResponseHandler() {
       @Override
       public void onStart() {
@@ -172,9 +191,16 @@ public class SearchActivity extends AppCompatActivity implements SettingsDialog.
       }
 
       @Override
-      public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-        // TODO: Add Correct Error Handling if not able to communicate to NYTimes
-        Log.d("DEBUG", responseString);
+      public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
+        if(throwable instanceof IOException){
+          // UnknownHostException - Unable to resolve host "api.nytimes.com"
+          Toast.makeText(getApplicationContext(), R.string.error_no_connection_nytimes, Toast.LENGTH_LONG).show();
+        }
+
+        if(throwable instanceof JSONException){
+          // Unexpected response type
+          Toast.makeText(getApplicationContext(), R.string.error_unable_to_parse, Toast.LENGTH_LONG).show();
+        }
       }
     };
   }
@@ -227,8 +253,10 @@ public class SearchActivity extends AppCompatActivity implements SettingsDialog.
   private Boolean isNetworkAvailable(){
     ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
     NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
+
     return networkInfo != null && networkInfo.isConnectedOrConnecting();
   }
+
 
   /**
    * Get Data Back from SettingsActivity
@@ -252,7 +280,5 @@ public class SearchActivity extends AppCompatActivity implements SettingsDialog.
   @Override
   public void onSettingChanged(SearchFilter searchFilter) {
     this.searchFilter = searchFilter;
-    //TODO - Remove Toast
-    Toast.makeText(this, "new date: " + searchFilter.getBeginDate(), Toast.LENGTH_LONG).show();
   }
 }

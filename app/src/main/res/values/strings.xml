@@ -13,8 +13,10 @@
     <string name="arts">Arts</string>
     <string name="fashion_style"><![CDATA[Fashion & Style]]></string>
     <string name="sports">Sports</string>
-    <string name="no_network">Unable to connect to internet</string>
+    <string name="error_no_network">Unable to connect to internet</string>
     <string name="share">Share</string>
+    <string name="error_no_connection_nytimes">Unable to connect to nytimes.com</string>
+    <string name="error_unable_to_parse">Unable to parse result</string>
     <string-array name="sort_order_array">
         <item>Newest</item>
         <item>Oldest</item>

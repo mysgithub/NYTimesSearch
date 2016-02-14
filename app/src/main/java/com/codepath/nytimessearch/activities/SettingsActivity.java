@@ -9,7 +9,6 @@ import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Spinner;
-import android.widget.Toast;
 
 import com.codepath.nytimessearch.R;
 import com.codepath.nytimessearch.models.SearchFilter;
@@ -138,6 +137,6 @@ public class SettingsActivity extends AppCompatActivity implements DatePickerDia
     String formatted = dateFormat.format(calendar.getTime());
     etBeginDate.setText(formatted);
 
-    Toast.makeText(this, "new date:" + formatted, Toast.LENGTH_LONG).show();
+    //Toast.makeText(this, "new date:" + formatted, Toast.LENGTH_LONG).show();
   }
 }

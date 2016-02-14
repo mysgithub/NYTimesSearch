@@ -13,7 +13,6 @@ import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Spinner;
-import android.widget.Toast;
 
 import com.codepath.nytimessearch.R;
 import com.codepath.nytimessearch.models.SearchFilter;
@@ -109,7 +108,7 @@ public class SettingsDialog extends DialogFragment implements DatePickerDialog.O
     String formatted = dateFormat.format(calendar.getTime());
     etBeginDate.setText(formatted);
 
-    Toast.makeText(getContext(), "new date: " + formatted, Toast.LENGTH_LONG).show();
+    //Toast.makeText(getContext(), "new date: " + formatted, Toast.LENGTH_LONG).show();
   }
 
   public interface OnSettingChangedListener {

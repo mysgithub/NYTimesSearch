@@ -181,11 +181,19 @@ public class SearchActivity extends AppCompatActivity implements SettingsDialog.
         Log.d("DEBUG", "Response: " + response.toString());
 
         try {
+          int curSize = adapter.getItemCount();
+          //Log.d("DEBUG", "Current Size Old: "+ curSize);
+          //Log.d("DEBUG", "Articles Size Old: " + articles.size());
+
           JSONArray articleJsonResults = response.getJSONObject("response").getJSONArray("docs");
           articles.addAll(Article.fromJson(articleJsonResults));
 
-          int curSize = adapter.getItemCount();
-          adapter.notifyItemRangeInserted(curSize, articles.size() - 1);
+          //int curSize1 = adapter.getItemCount();
+          //Log.d("DEBUG", "Current Size New: "+ curSize1);
+          //Log.d("DEBUG", "Articles Size New: "+ articles.size());
+          //Log.d("DEBUG", "articleJsonResults: "+ articleJsonResults.length());
+
+          adapter.notifyItemRangeInserted(curSize, articleJsonResults.length());
           //Log.d("DEBUG", articles.toString());
         } catch (JSONException ex) {
           ex.printStackTrace();

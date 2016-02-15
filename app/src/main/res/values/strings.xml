@@ -17,6 +17,7 @@
     <string name="share">Share</string>
     <string name="error_no_connection_nytimes">Unable to connect to nytimes.com</string>
     <string name="error_unable_to_parse">Unable to parse result</string>
+    <string name="loading">Loading...</string>
     <string-array name="sort_order_array">
         <item>Newest</item>
         <item>Oldest</item>

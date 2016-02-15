@@ -15,6 +15,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.codepath.nytimessearch.R;
@@ -42,6 +43,7 @@ import cz.msebera.android.httpclient.Header;
 public class SearchActivity extends AppCompatActivity implements SettingsDialog.OnSettingChangedListener {
 
   @Bind(R.id.rvArticles) RecyclerView rvItems;
+  @Bind(R.id.miActionProgress) RelativeLayout miActionProgressItem;
 
   ArrayList<Article> articles;
   ArticleAdapter adapter;
@@ -119,6 +121,7 @@ public class SearchActivity extends AppCompatActivity implements SettingsDialog.
     searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
       @Override
       public boolean onQueryTextSubmit(String query) {
+        showProgressBar();
         // Show Toast - if no connection
         if (!isNetworkAvailable()) {
           Toast.makeText(getApplicationContext(), R.string.error_no_network, Toast.LENGTH_LONG).show();
@@ -162,6 +165,21 @@ public class SearchActivity extends AppCompatActivity implements SettingsDialog.
 
   }
 
+
+  /**
+   * Show progress item
+   */
+  public void showProgressBar() {
+    miActionProgressItem.setVisibility(View.VISIBLE);
+  }
+
+  /**
+   * Hide progress item
+   */
+  public void hideProgressBar() {
+    miActionProgressItem.setVisibility(View.INVISIBLE);
+  }
+
   /**
    * JsonHttpResponseHandler
    * @return JsonHttpResponseHandler
@@ -173,6 +191,11 @@ public class SearchActivity extends AppCompatActivity implements SettingsDialog.
       @Override
       public void onStart() {
         Log.d("DEBUG", "Request: " + super.getRequestURI().toString());
+      }
+      @Override
+      public void onFinish() {
+        super.onFinish();
+        hideProgressBar();
       }
 
       @Override

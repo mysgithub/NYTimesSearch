@@ -38,13 +38,13 @@ The following **additional** features are implemented:
 
 * [X] Custom Spinner for Sort Order
 * [X] Flavien Laurent DateTimePicker 
-* [X] List anything else that you can get done to improve the app functionality!
+* [X] Progress bar
 
 ## Video Walkthrough
 
 Here's a walkthrough of implemented user stories:
 
-<img src='https://raw.githubusercontent.com/mysgithub/NYTimesSearch/master/nytimes-search-app.gif' title='Video Walkthrough' width='' alt='Video Walkthrough' />
+<img src='https://raw.githubusercontent.com/mysgithub/NYTimesSearch/master/nytimes-search-app1.gif' title='Video Walkthrough' width='' alt='Video Walkthrough' />
 
 GIF created with [LiceCap](http://www.cockos.com/licecap/).
 

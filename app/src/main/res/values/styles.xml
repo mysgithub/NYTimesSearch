@@ -6,6 +6,7 @@
         <item name="colorPrimary">@color/nyTimesColorPrimary</item>
         <item name="colorPrimaryDark">@color/nyTimescolorPrimaryDark</item>
         <item name="colorAccent">@color/nyTimescolorcolorAccent</item>
+        <item name="android:windowBackground">@android:color/white</item>
     </style>
 
     <!-- NYTimes application theme. -->

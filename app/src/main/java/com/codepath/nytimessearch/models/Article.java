@@ -1,5 +1,7 @@
 package com.codepath.nytimessearch.models;
 
+import android.util.Log;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -46,6 +48,7 @@ public class Article implements Serializable{
         a.thumbnail = "http://www.nytimes.com/" + multimediaJson.getString("url");
       }else{
         a.thumbnail = "";
+        Log.d("DEBUG", "No Thumbnail Image...");
       }
     }catch (JSONException ex){
       ex.printStackTrace();

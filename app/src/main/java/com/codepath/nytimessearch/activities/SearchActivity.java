@@ -20,6 +20,7 @@ import android.widget.Toast;
 
 import com.codepath.nytimessearch.R;
 import com.codepath.nytimessearch.adapters.ArticleAdapter;
+import com.codepath.nytimessearch.adapters.ArticleRecyclerViewAdapter;
 import com.codepath.nytimessearch.listeners.EndlessRecyclerViewScrollListener;
 import com.codepath.nytimessearch.models.Article;
 import com.codepath.nytimessearch.models.SearchFilter;
@@ -46,7 +47,7 @@ public class SearchActivity extends AppCompatActivity implements SettingsDialog.
   @Bind(R.id.miActionProgress) RelativeLayout miActionProgressItem;
 
   ArrayList<Article> articles;
-  ArticleAdapter adapter;
+  ArticleRecyclerViewAdapter adapter;
 
   SearchFilter searchFilter;
   String mQuery;
@@ -69,7 +70,8 @@ public class SearchActivity extends AppCompatActivity implements SettingsDialog.
     }
     articles = new ArrayList<>();
     //adapter = new ArticleArrayAdapter(this, articles);
-    adapter = new ArticleAdapter(articles, getApplicationContext());
+    //adapter = new ArticleAdapter(articles, getApplicationContext());
+    adapter = new ArticleRecyclerViewAdapter(articles);
     rvItems.setAdapter(adapter);
 
     // Click Listener

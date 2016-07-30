@@ -36,7 +36,8 @@ public class ArticleActivity extends AppCompatActivity {
     // Enable up icon
     getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     // Get Data
-    Article article = (Article) getIntent().getSerializableExtra("article");
+    //Article article = (Article) getIntent().getSerializableExtra("article");
+    Article article = getIntent().getParcelableExtra("article");
 
     // Title
     ActionBar actionBar = getSupportActionBar();
